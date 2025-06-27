@@ -1,7 +1,8 @@
-'use client'
+'use client';
 
 import { ToDo } from '@/types/todo';
-import { useState } from 'react'
+import { useState } from 'react';
+import { Icon } from '@iconify/react';
 
 type Props = {
   todo: ToDo
@@ -37,7 +38,10 @@ export default function TodoItem({ todo, onToggle, onDelete }: Props) {
         }}
         className="text-red-500 hover:text-red-700"
       >
-        ✕
+        <Icon
+            icon="solar:trash-bin-trash-outline"
+            fontSize={21}
+        />
       </button>
     </div>
   )
