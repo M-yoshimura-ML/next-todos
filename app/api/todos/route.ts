@@ -1,17 +1,27 @@
 import { NextResponse } from 'next/server';
 import { mockTodos, addTodo } from '@/lib/mockData';
+import mongoDBClient from '@/lib/mongodb';
 
-// let mockTodos = [
-//   { _id: '1', text: 'go shopping', completed: false },
-//   { _id: '2', text: 'read book', completed: true },
-// ]
+
+const DB_NAME = 'next-todos';
+const COLLECTION_NAME = 'todos';
 
 export async function GET() {
   return NextResponse.json(mockTodos)
 }
 
 export async function POST(req: Request) {
-  const { text } = await req.json()
-  const newTodo = addTodo(text);
-  return NextResponse.json(newTodo);
+  const client = await mongoDBClient;
+  const db = client.db(DB_NAME);
+
+  const { text } = await req.json();
+  const newTodo = { text, completed: false };
+
+  const result = await db.collection(COLLECTION_NAME).insertOne(newTodo);
+
+  return NextResponse.json({
+    _id: result.insertedId.toString(),
+    ...newTodo,
+  })
+
 }
